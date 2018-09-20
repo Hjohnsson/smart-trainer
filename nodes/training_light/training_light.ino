@@ -1,3 +1,5 @@
+//Correct file
+
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <Adafruit_NeoPixel.h>
@@ -12,7 +14,7 @@ const char* mqttUser = "yourMQTTuser";
 const char* mqttPassword = "yourMQTTpassword";
 char message_buff[100];
 String state = "";
-String node = "NODE-1";
+String node = "NODE-2";
 
 String node_on = node + "-ON";
 String node_off = node + "-OFF";
@@ -145,7 +147,7 @@ void setup() {
   while (!client.connected()) {
     Serial.println("Connecting to MQTT...");
  
-    if (client.connect("Training-NODE-1")) {
+    if (client.connect("Training-NODE-2")) {
  
       Serial.println("connected");  
  
