@@ -15,20 +15,15 @@ num_nodes = 1
 num = random.randint(1,num_nodes)
 
 def log_split_times(state, mode):
-    file = open("split_times.log",mode)
+    file = open("/home/pi/smart-trainer/raspberry/split_times.log",mode)
     timestamp = str(datetime.datetime.now())
     msg = "State: " + state + " " + timestamp + "\n"
     file.write(msg)
     file.close()
 
-#def print_split_times():
-    #file = open("split_times.log", "r")
-    #for line in file:
-        #print line,
 
-
-def initiate_nodes():
-    print "Start sequence initiated, starting in 5 seconds"  
+def initiate_nodes(client):
+    print ("Start sequence initiated, starting in 5 seconds") 
     client.publish("wemos","START")
     time.sleep(7)
     print("Turning off before training starts")
@@ -40,7 +35,7 @@ def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
     client.subscribe("wemos")
     time.sleep(1)
-    print "Sending start message to: NODE %d" % num
+    print ("Sending start message to: NODE %d" % num)
     client.publish("wemos","NODE-%d-ON" % num)
     log_split_times("NODE-%d-ON" % num, "w")
 
@@ -53,6 +48,7 @@ def on_message_wemos(client, userdata, msg):
     #print "loops: %d" % loops
 
     _msg = str(msg.payload)
+    print (_msg)
 
     if _msg == "NODE-%d-OFF" % num:
         log_split_times("NODE-%d-OFF" % num, "a")
@@ -62,26 +58,34 @@ def on_message_wemos(client, userdata, msg):
 
         if loops >= total_loops:
             client.disconnect()
-            print "Round finished!"
-            print ""
+            print ("")
+            print ("Round finished!")
+            print ("")
             times2.print_split_times()
             times2.print_total_time()
             exit()
         else:
-            print "Sending message to: NODE %d" % num
+            print ("Sending message to: NODE %d") % num
             client.publish("wemos","NODE-%d-ON" % num)
             log_split_times("NODE-%d-ON" % num, "a")
             loops += 1
 
+def main():
 
-client = mqtt.Client(client_id="Main-program", clean_session=True)
+    client = mqtt.Client(client_id="Main-program", clean_session=True)
 
-client.on_connect = on_connect
-client.on_message = on_message_wemos
+    client.on_connect = on_connect
+    client.on_message = on_message_wemos
 
-client.connect("192.168.1.200", 1883, 60)
+    client.connect("192.168.1.200", 1883, 60)
 
-# Initate nodes to prepare the trainer
-initiate_nodes()
+    # Initate nodes to prepare the trainer
+    initiate_nodes(client)
 
-client.loop_forever()
+    client.loop_forever()
+
+
+if __name__ == "__main__":
+    main()
+
+
