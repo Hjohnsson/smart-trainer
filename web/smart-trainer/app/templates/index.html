@@ -1,0 +1,45 @@
+<!-- about.html-->
+
+{% extends "base.html" %}
+{% block title %}Smart Trainer{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="jumbotron">
+        <h1>Smart Trainer</h1>
+        <p class="lead"></p>
+        <form method="POST">
+            <div>
+                <input value="Start" id="btnStart" name="knappen" class="btn btn-lg btn-success btn-block" type="submit">
+            </div>
+        </form>
+        <form method="POST">
+            <div>
+                <input value="Clear" id="btnClear" name="knappen" class="btn btn-lg btn-dark btn-block" type="submit">
+            </div>
+        </form>
+    </div>
+
+    <h3> Total time: {{time}} </h3>
+    <h3> Split time: {{split}} </h3>
+
+    <div>
+        <p>TABLE SHALL BE HERE</p>
+        <p>{{ split }} </p>
+
+        <table>
+            <tr>
+                <th>Round</th>
+                <th>Time</th>
+            </tr>
+            <tr><td>test</td><td>test2</td></tr>
+            {% for time in split %}
+                <tr><td class="body-item mbr-fonts-style display-7">1</td><td class="body-item mbr-fonts-style display-7">{{time}}</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
+
+
+</div>
+{% endblock %}
