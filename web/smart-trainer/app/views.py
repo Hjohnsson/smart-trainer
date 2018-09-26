@@ -31,7 +31,7 @@ def index():
     #print (times2.print_total_time())
     
     if request.method == 'POST':
-        status = request.form['knappen']
+        status = request.form['start_button']
 
         if status == 'Clear':
             print ("Clearing")
@@ -83,20 +83,13 @@ def test():
 def about():
     return render_template("about.html")
 
-@app.route('/times')
-def times(time="0", split = []):
-    total_time = times2.print_total_time()
-    split_time = times2.print_split_times()
-    return render_template("times.html", time=total_time, split=split_time)
+@app.route('/settings')
+def settings():
+    return render_template("settings.html")
 
-@app.route('/showSignUp')
-def showSignUp():
-    return render_template('signup.html')
-
-@app.route('/showHome')
-def showHome():
-    return render_template('index.html')
-
+@app.route('/highscore')
+def highscore():
+    return render_template("highscore.html")
 
 @app.route('/signUp',methods=['POST','GET'])
 def signUp():

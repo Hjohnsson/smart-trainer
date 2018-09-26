@@ -1,0 +1,32 @@
+<!-- settings.html-->
+
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block body %}
+<section class="mbr-section form3 cid-r47rnLwSFj" id="form3-a">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="title col-12 col-lg-8">
+                <h2 class="align-center pb-2 mbr-fonts-style display-2">Settings</h2>
+                <h3 class="mbr-section-subtitle align-center pb-5 mbr-light mbr-fonts-style display-5">Customize your training</h3>
+            </div>
+        </div>
+
+        <div class="row py-2 justify-content-center">
+            <div class="col-12 col-lg-6  col-md-8 " data-form-type="formoid">
+
+                <form class="mbr-form" method="post">
+                    <div class="mbr-subscribe input-group">
+                        <input class="form-control" type="number" name="rounds" placeholder="Rounds" required="" id="round_number">
+                        <input class="form-control" type="number" name="nodes" placeholder="Nodes" required="" id="node_number">
+                        <span class="input-group-btn"><button type="submit" class="btn  btn-info display-4">SUBMIT</button></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
