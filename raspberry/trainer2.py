@@ -11,9 +11,11 @@ import threading
 
 
 loops = 0
-total_loops = 9
-num_nodes = 2
+#total_loops = 9
+total_loops = 2
+num_nodes = 3
 num = random.randint(1,num_nodes)
+delay_time = 0.5
 
 def log_split_times(state, mode):
     file = open("/home/pi/smart-trainer/raspberry/split_times.log",mode)
@@ -31,7 +33,6 @@ def initiate_nodes(client):
     client.publish("wemos","OFF")
     #time.sleep(1)
     
- 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
     client.subscribe("wemos")
@@ -58,16 +59,17 @@ def on_message_wemos(client, userdata, msg):
         log_split_times("NODE-%d-OFF" % num, "a")
         num = random.randint(1,num_nodes)
 
-        time.sleep(1)
+        time.sleep(delay_time)
 
         if loops >= total_loops:
-            client.disconnect()
             print ("")
             print ("Round finished!")
+            client.publish("wemos","FINISHED")
             print ("")
             times2.print_split_times()
             times2.print_total_time()
             loops = 0
+            client.disconnect()
             exit()
         else:
             print ("Sending message to: NODE %d" % num)
