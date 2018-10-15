@@ -7,15 +7,19 @@ import time
 import datetime
 import random
 import times2
+import settings2
 import threading
 
 
-loops = 0
+loops = 0  # keep track of how many rounds thats been run
 #total_loops = 9
-total_loops = 2
-num_nodes = 3
+#num_nodes = 3
+#delay_time = 0.5
+
+total_loops = settings2.get_values_int("rounds") - 1
+num_nodes = settings2.get_values_int("nodes")
+delay_time = settings2.get_values_float("delay")
 num = random.randint(1,num_nodes)
-delay_time = 0.5
 
 def log_split_times(state, mode):
     file = open("/home/pi/smart-trainer/raspberry/split_times.log",mode)
@@ -23,7 +27,6 @@ def log_split_times(state, mode):
     msg = "State: " + state + " " + timestamp + "\n"
     file.write(msg)
     file.close()
-
 
 def initiate_nodes(client):
     print ("Start sequence initiated, starting in 5 seconds") 
@@ -42,6 +45,7 @@ def on_connect(client, userdata, flags, rc):
     log_split_times("NODE-%d-ON" % num, "w")
 
 def on_message_wemos(client, userdata, msg):
+    global total_loops
     global loops
     global num
 
@@ -59,7 +63,7 @@ def on_message_wemos(client, userdata, msg):
         log_split_times("NODE-%d-OFF" % num, "a")
         num = random.randint(1,num_nodes)
 
-        time.sleep(delay_time)
+        time.sleep(delay_time/1000)
 
         if loops >= total_loops:
             print ("")
@@ -70,7 +74,8 @@ def on_message_wemos(client, userdata, msg):
             times2.print_total_time()
             loops = 0
             client.disconnect()
-            exit()
+            #exit()
+            return
         else:
             print ("Sending message to: NODE %d" % num)
             client.publish("wemos","NODE-%d-ON" % num)
@@ -78,12 +83,15 @@ def on_message_wemos(client, userdata, msg):
             loops += 1
 
 def main():
+    total_loops = settings2.get_values_int("rounds") - 1
+    num_nodes = settings2.get_values_int("nodes")
+    delay_time = settings2.get_values_float("delay")
+    num = random.randint(1,num_nodes)
 
     client = mqtt.Client(client_id="Main-program", clean_session=True)
 
     client.on_connect = on_connect
     client.on_message = on_message_wemos
-
     client.connect("192.168.1.200", 1883, 60)
 
     # Initate nodes to prepare the trainer
