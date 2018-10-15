@@ -1,9 +1,11 @@
 # views.py
 
 import sys
+import time
 sys.path.append('/home/pi/smart-trainer/raspberry/')
 import times2
 import trainer2
+import settings2
 import subprocess
 import os
 import threading
@@ -52,8 +54,8 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 class LoginForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password')
+    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('Password')
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -97,6 +99,10 @@ def home():
     if current_user.is_authenticated:
     #print(request.method)
     #print (times2.print_total_time())
+
+        nodes = settings2.get_values_int("nodes")
+        rounds = settings2.get_values_int("rounds")
+        delay = settings2.get_values_int("delay")
     
         if request.method == 'POST':
             status = request.form['start_button']
@@ -116,12 +122,15 @@ def home():
 
                 total_time = times2.print_total_time()
                 split_time = times2.print_split_times()
-                return render_template("index.html", total_time=total_time, split=split_time)
+                return render_template("index.html", total_time=total_time, split=split_time, nodes=nodes, rounds=rounds, delay=delay)
     
     #total_time = times2.print_total_time()
     #split_time = times2.print_split_times()
     #return render_template("index.html", time=total_time, split=split_time)
-        return render_template("index.html")
+        nodes = settings2.get_values_int("nodes")
+        rounds = settings2.get_values_int("rounds")
+        delay = settings2.get_values_int("delay")
+        return render_template("index.html",nodes=nodes, rounds=rounds, delay=delay)
 
 @app.route('/logout')
 @login_required
@@ -129,37 +138,42 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route('/test', methods=['GET','POST'])
-def test():
-    #print(request.method)
-    #print (times2.print_total_time())
-    
-    if request.method == 'POST':
-        nodes = int(request.form['nodes'])
-        rounds = int(request.form['rounds'])
-
-        if nodes > 0 and rounds >0:
-            t1 = threading.Thread(target=trainer2.main)
-            t1.daemon = True
-            t1.start()
-            t1.join()
-
-            total_time = times2.print_total_time()
-            split_time = times2.print_split_times()
-            return render_template("test.html", total_time = total_time, split=split_time)
-
-
-    return render_template("test.html")
-
 @app.route('/about')
 def about():
     return render_template("about.html")
 
-@app.route('/settings')
+@app.route('/settings', methods=['GET','POST'])
+@login_required
 def settings():
-    return render_template("settings.html")
+    if current_user.is_authenticated:
+        nodes = settings2.get_values_int("nodes")
+        rounds = settings2.get_values_int("rounds")
+        delay = settings2.get_values_int("delay")
+        distance = settings2.get_values_int("distance")
+
+        if request.method == 'POST':
+            rounds_input = request.form['rounds']
+            nodes_input = request.form['nodes']
+            delay_input = request.form['delay']
+            distance_input = request.form['distance']
+
+            # Update sql database
+            settings2.update_values("nodes",int(nodes_input))
+            settings2.update_values("rounds",int(rounds_input))
+            settings2.update_values("delay",int(delay_input))
+            #settings2.update_values("distance",int(distance_input))
+
+            # Read new values from sql database
+            nodes = settings2.get_values_int("nodes")
+            rounds = settings2.get_values_int("rounds")
+            delay = settings2.get_values_int("delay")
+            distance = settings2.get_values_int("distance")
+
+        return render_template("settings.html", nodes=nodes, rounds=rounds, delay=delay, distance=distance)
+    return render_template("index.html")
 
 @app.route('/highscore')
+@login_required
 def highscore():
     return render_template("highscore.html")
 
