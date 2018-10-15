@@ -1,0 +1,13 @@
+python3 -m pip install paho-mqtt
+python3 -m pip install Flask
+python3 -m pip install flask-mysql
+python3 -m pip install flask
+pip3 install mysqlclient
+pip3 install flask_wtf
+pip3 install flask_login
+pip3 install flask_sqlalchemy
+pip3 install flask_table
+
+# GRANT ALL PRIVILEGES ON * . * TO 'pi'@'localhost';
+# create user 'pi'@'localhost' identified by 'herman93';
+# FLUSH PRIVILEGES;
