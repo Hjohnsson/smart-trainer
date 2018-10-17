@@ -4,17 +4,23 @@
 #include <PubSubClient.h>
 #include <Adafruit_NeoPixel.h>
 
+#define _ESPLOGLEVEL_ 0
 
+//const char* ssid = "ASUS";
+//const char* password =  "hermanebest123!";
+//const char* mqttServer = "192.168.1.200";
 
-const char* ssid = "ASUS";
-const char* password =  "hermanebest123!";
-const char* mqttServer = "192.168.1.200";
+const char* ssid = "SmartTrainer";
+const char* password =  "runforestrun";
+const char* mqttServer = "192.168.1.20";
+
+//IPAddress mqttServer(192,168,4,1);
 const int mqttPort = 1883;
-const char* mqttUser = "yourMQTTuser";
-const char* mqttPassword = "yourMQTTpassword";
+const char* mqttUser = "guest";
+const char* mqttPassword = "guest";
 char message_buff[100];
 String state = "";
-String node = "NODE-2";
+String node = "NODE-3";
 
 String node_on = node + "-ON";
 String node_off = node + "-OFF";
@@ -53,6 +59,27 @@ void start_sq() {
   }
 }
 
+void finish_sq() {
+  for (int x=0; x <= 10; x++) {  
+    for (int i = 0; i < NUM_PIXELS; i++) {
+      pixels.setPixelColor(i, 0, 200, 0);
+      pixels.show();
+      //delay(1);
+    }
+    delay(150);
+    for (int i = 0; i < NUM_PIXELS; i++) {
+      pixels.setPixelColor(i, 0, 0, 0);
+      pixels.show();
+      //delay(1);
+    }
+    delay(150);
+  }
+//  for (int i = 0; i < NUM_PIXELS; i++) {
+//    pixels.setPixelColor(i, 0, 0, 100);
+//    pixels.show();
+//    //delay(20);
+//  }
+}
 
 void setColor(uint32_t color) {
   for (int i = 0; i < NUM_PIXELS; i++) {
@@ -120,6 +147,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
   } else if (msgString=="START") {
     Serial.println("Start sequence initiated");
     start_sq();
+  } else if (msgString=="FINISHED") {
+    Serial.println("Program finished");
+    finish_sq();
   }
   //Serial.println("Payload: " + msgString);
 }
@@ -132,7 +162,7 @@ void setup() {
   pixels.begin();
   Serial.begin(9600);
   setColor(pixels.Color(0, 0, 0));
- 
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
  
   while (WiFi.status() != WL_CONNECTED) {
@@ -147,14 +177,14 @@ void setup() {
   while (!client.connected()) {
     Serial.println("Connecting to MQTT...");
  
-    if (client.connect("Training-NODE-2")) {
+    if (client.connect("Training-NODE-3")) {
  
       Serial.println("connected");  
  
     } else {
  
       Serial.print("failed with state ");
-      Serial.print(client.state());
+      Serial.println(client.state());
       delay(2000);
  
     }
