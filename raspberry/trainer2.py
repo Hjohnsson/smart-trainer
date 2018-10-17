@@ -92,7 +92,7 @@ def main():
 
     client.on_connect = on_connect
     client.on_message = on_message_wemos
-    client.connect("192.168.1.200", 1883, 60)
+    client.connect("localhost", 1883, 60)
 
     # Initate nodes to prepare the trainer
     initiate_nodes(client)
