@@ -1,0 +1,26 @@
+<!doctype html>
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% extends "base.html"%}
+{% block title %}Log in{% endblock %}
+<!-- {% block content %} -->
+{% endblock %}
+
+{% block body %}
+<body>
+	<div data-form-type="formiod">
+		<form class="mbr-form" method="POST" action"/login">
+			<div class="mbr-subscribe input-group">
+				{{ form.hidden_tag() }}
+				{{ wtf.form_field(form.username) }}
+				{{ wtf.form_field(form.password) }}
+			</div>
+
+			<span class="input-group-btn"><button type="submit" class="btn btn-info display-4">Sign In</button></span>
+		</form>
+	</div>
+
+	{% endblock %}
+</body>

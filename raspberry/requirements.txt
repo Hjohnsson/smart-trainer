@@ -1,0 +1,47 @@
+# Step 1 install venv
+sudo apt-get install python3 python3-venv python3-pip
+
+cd /srv
+sudo mkdir smart-trainer
+sudo chown pi:pi smart-trainer
+
+cd /srv/smart-trainer
+python3 -m venv .
+source bin/activate
+
+
+# Step 2 install python dependencies
+#
+python3 -m pip install paho-mqtt
+python3 -m pip install Flask
+python3 -m pip install flask-mysql
+python3 -m pip install flask
+pip3 install mysqlclient
+pip3 install flask_wtf
+pip3 install flask_login
+pip3 install flask_sqlalchemy
+pip3 install flask_table
+pip3 install flask_bootstrap
+
+# check out git
+cd /home/pi
+git clone https://github.com/Hjohnsson/smart-trainer.git
+cd /home/pi/smart-trainer/raspberry/
+
+# installera mysql
+sudo apt-get install mysql-server
+
+sudo mysql -uroot -p
+
+# CREATE USER 'pi'@'localhost' IDENTIFIED BY 'herman93';
+# GRANT ALL PRIVILEGES ON * . * TO 'pi'@'localhost';
+# FLUSH PRIVILEGES;
+# CREATE DATABASE SmartTrainer;
+#
+# run script to import database
+sudo ./import_sql_database.sh
+
+# start flask
+# export FLASK_DEBUG=1
+# export FLASK_APP=views.py
+# flask run --host=0.0.0.0
