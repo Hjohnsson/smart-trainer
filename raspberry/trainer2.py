@@ -82,11 +82,24 @@ def on_message_wemos(client, userdata, msg):
             log_split_times("NODE-%d-ON" % num, "a")
             loops += 1
 
-def main():
+
+def read_settings():
+    global total_loops
+    global num_nodes
+    global delay_time
+    global num
+
     total_loops = settings2.get_values_int("rounds") - 1
     num_nodes = settings2.get_values_int("nodes")
     delay_time = settings2.get_values_float("delay")
     num = random.randint(1,num_nodes)
+
+def main():
+    #total_loops = settings2.get_values_int("rounds") - 1
+    #num_nodes = settings2.get_values_int("nodes")
+    #delay_time = settings2.get_values_float("delay")
+    #num = random.randint(1,num_nodes)
+    read_settings()
 
     client = mqtt.Client(client_id="Main-program", clean_session=True)
 
