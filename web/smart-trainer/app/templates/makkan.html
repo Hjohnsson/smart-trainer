@@ -1,0 +1,334 @@
+{% extends "navbar.html" %}
+{% block page_content %}
+
+{% if node_1 %}
+<style>
+        .dot1 {
+            height: 25px;
+            width: 25px;
+            background-color: #337ab7;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        </style>
+{% else %}
+<style>
+        .dot1 {
+            height: 25px;
+            width: 25px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        </style>
+{% endif %}
+{% if node_2 %}
+<style>
+        .dot2 {
+            height: 25px;
+            width: 25px;
+            background-color: #337ab7;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        </style>
+{% else %}
+<style>
+        .dot2 {
+            height: 25px;
+            width: 25px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        </style>
+{% endif %}
+{% if node_3 %}
+<style>
+        .dot3 {
+            height: 25px;
+            width: 25px;
+            background-color: #337ab7;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        </style>
+{% else %}
+<style>
+        .dot3 {
+            height: 25px;
+            width: 25px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        </style>
+{% endif %}
+{% if node_4 %}
+<style>
+        .dot4 {
+            height: 25px;
+            width: 25px;
+            background-color: #337ab7;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        </style>
+{% else %}
+<style>
+        .dot4 {
+            height: 25px;
+            width: 25px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        </style>
+{% endif %}
+{% if node_5 %}
+<style>
+        .dot5 {
+            height: 25px;
+            width: 25px;
+            background-color: #337ab7;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        </style>
+{% else %}
+<style>
+        .dot5 {
+            height: 25px;
+            width: 25px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        </style>
+{% endif %}
+
+<style>
+.selectionWidth {
+            width: 400px;
+        }
+        </style>
+<style>
+        .slidecontainer {
+            width: 100%;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 25px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+        
+        .slider:hover {
+            opacity: 1;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #337ab7;
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: #337ab7;
+            cursor: pointer;
+        }
+</style>
+<body background="{{ url_for('static', filename='back-body-bodybuilding-28061.jpg') }}" style="color:white">
+<div class="container-fluid text-center" style="min-height: 800px;">    
+        <div class="row content">
+          <div class="col-sm-2">
+
+          </div>
+          <div class="col-sm-8 text-left"> 
+            
+<div>
+                <div>
+                <div style="text-align:center">
+                        <h1>Active nodes<h1>
+                        {% for i in  nodes_list %}
+                        <span class="dot{{ i }}"></span>
+                        {% endfor %}
+                      </div>
+                <div class="container-fluid" style="margin-left: 400px">
+                <form method="POST" action"/login">
+                    <div>
+                    <h4>Player</h4>
+                    <input class="selectionWidth" type="text" placeholder="Player name" name="player" style="color:black"></input>
+                <br>    
+                </div>
+                    <div>
+                        <br>
+                        <h4>Nodes</h4>
+                        <input type="range" min="1" max="3" value="{{nodes}}" class="slider" id="numNodes" name="nodes" style="width: 400px"><p id="showNumNodes"></p> 
+                        <div>
+                    <div>
+                        <h4>Rounds</h4>
+                        <input name="duration" type="range" min="1" max="20" value="{{rounds}}" class="slider" id="myRange" style="width: 400px"><p id="demo"></p> 
+                    </div>
+                    <div>
+                        <h4>Delay</h4>
+                        <input name="time_sleep" type="range" min="25" max="2000" step="25" value="{{delay}}" class="slider" id="numTimeSleep" style="width: 400px"><p id="showNumTimeSleep"></p> 
+                        </div>
+                    <div>
+                    <h4>Sensitivity</h4>
+                    <input name="sensitivity" type="range" min="5" max="100" step="5" value="{{distance}}" class="slider" id="numSense" style="width: 400px"><p id="showNumSense"></p> 
+                    </div>
+                    <div class="selectionWidth" style="color:black">
+                    <button class="btn btn-lg btn-primary" type="submit">Start</button>
+                    <button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#exampleModal">
+                            Avbryt
+                          </button>
+                    </div>
+                </form>
+                <!-- Button trigger modal -->
+                 
+                <br>
+                {% if start %}
+                <div class="alert alert-success selectionWidth" role="alert">
+                {% endif %}
+                {% if start_2 %}
+                <div class="alert alert-danger selectionWidth" role="alert">
+                {% endif %}
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for message in messages %}
+                
+                      <h5>{{ message }}</h5>
+                    {% endfor %}
+                
+                  {% endif %}
+                {% endwith %}
+                </div>
+                
+
+         
+                
+</div>                
+</div>
+</div>
+</div>
+</div>
+
+
+
+          </div>
+        
+        </div>
+      </div>
+      
+      <footer class="container-fluid text-center">
+        <p>Smart Trainer</p>
+        
+        
+      </footer>
+      
+      </body>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="color: black">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Result</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+        <canvas id="lineChart"></canvas>
+        </div>
+        <div>
+                <div class="mypanel"></div>
+            <p><strong>Player: </strong>{{ player }}</p>
+            <p><strong>Nodes: </strong>{{ nodes }}</p>
+            <p><strong>Rounds: </strong>{{ rounds }}</p>
+            <p><strong>Delay: </strong>{{ delay }}</p>
+            <p><strong>Sensitivity: </strong>{{ distance }}</p>
+</div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+<script>
+
+
+var ctxL = document.getElementById("lineChart").getContext('2d');
+var myLineChart = new Chart(ctxL, {
+  type: 'line',
+  data: {
+    labels: [{% for item in labels %}
+"{{item}}",
+{% endfor %}],
+    datasets: [{
+        label: "Times",
+        data: [{% for item in values %}
+"{{item}}",
+{% endfor %}],
+
+        borderColor: [
+          '#337ab7',
+        ],
+        borderWidth: 2
+      }
+    ]
+  },
+  options: {
+    responsive: true
+  }
+});
+
+
+
+var senseSlider = document.getElementById("numSense");
+var senseOutput = document.getElementById("showNumSense");
+
+senseOutput.innerHTML = senseSlider.value;
+senseSlider.oninput = function() {
+    senseOutput.innerHTML = this.value;
+}
+
+var timeSlider = document.getElementById("numTimeSleep");
+var timeOutput = document.getElementById("showNumTimeSleep");
+timeOutput.innerHTML = timeSlider.value;
+timeSlider.oninput = function() {
+    timeOutput.innerHTML = this.value;
+}
+
+var nodeSlider = document.getElementById("numNodes");
+var nodeOutput = document.getElementById("showNumNodes");
+nodeOutput.innerHTML = nodeSlider.value;
+nodeSlider.oninput = function() {
+    nodeOutput.innerHTML = this.value;
+}
+
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+    output.innerHTML = this.value;
+} 
+</script>
+{% endblock %}

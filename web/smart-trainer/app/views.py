@@ -1,7 +1,6 @@
 # views.py
 
 import sys
-import time
 sys.path.append('/home/pi/smart-trainer/raspberry/')
 import times2
 import trainer2
@@ -16,16 +15,24 @@ from wtforms.validators import InputRequired, Email, Length
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import sqlite3
 from flask_sqlalchemy  import SQLAlchemy
-from flask import session, Flask, url_for, redirect, render_template, request, flash, json
+from flask import session, Flask, url_for, redirect, render_template, request, flash, Markup
 import flask
 from flask_table import Table, Col
-from app import app
-from flaskext.mysql import MySQL
+#from app import app
+#from flaskext.mysql import MySQL
 from werkzeug import generate_password_hash, check_password_hash
 from contextlib import closing
+#import thread
+import time
+#import jsonify
 
+node_1 = None
+node_2 = None
+node_3 = None
+node_4 = None  
+node_5 = None
 # mysql = MySQL()
-
+app = Flask(__name__)
 # # MySQL configurations
 # app.config['MYSQL_DATABASE_USER'] = 'pi'
 # app.config['MYSQL_DATABASE_PASSWORD'] = 'herman93'
@@ -54,8 +61,8 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('Password')
+    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    password = PasswordField('password')
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -66,6 +73,7 @@ class User(UserMixin, db.Model):
     phone = db.Column(db.String(15))
     ip_address = db.Column(db.String(25))
     user_id = db.Column(db.String(25))
+
 
 @app.route('/', methods=['GET'])
 def index():
@@ -92,118 +100,216 @@ def login():
 
     return flask.render_template('login.html', form=form)
 
+def node_func():
+    starttime=time.time()
+    x = 0
+    while x < 1:
+        x += 1
+        global node_1
+        with open('TEST', 'r') as f:
+            reader = f.read()
+            #print repr(reader)
+            if reader == "1\n":    
+                node_1 = True
+            if reader == "2\n":
+                node_1 = False
+        global node_2
+        node_2 = True
+        global node_3
+        node_3 = True
+        global node_4  
+        node_4 = False
+        global node_5  
+        node_5 = False
+        
+        
+        time.sleep(5.0 - ((time.time() - starttime) % 5.0))
+
 
 @app.route('/home', methods=['GET','POST'])
 @login_required
 def home():
-    if current_user.is_authenticated:
-    #print(request.method)
-    #print (times2.print_total_time())
-
-        nodes = settings2.get_values_int("nodes")
-        rounds = settings2.get_values_int("rounds")
-        delay = settings2.get_values_int("delay")
-    
-        if request.method == 'POST':
-            status = request.form['start_button']
-
-            if status == 'Clear':
-                print ("Clearing")
-                total_time = ""
-                split_time = []
-                return render_template("index.html", time=total_time, split=split_time)
-
-            if status == 'Start':
-
-                t1 = threading.Thread(target=trainer2.main)
-                t1.daemon = True
-                t1.start()
-                t1.join()
-
-                total_time = times2.print_total_time()
-                split_time = times2.print_split_times()
-                return render_template("index.html", total_time=total_time, split=split_time, nodes=nodes, rounds=rounds, delay=delay)
-    
-    #total_time = times2.print_total_time()
-    #split_time = times2.print_split_times()
-    #return render_template("index.html", time=total_time, split=split_time)
-        nodes = settings2.get_values_int("nodes")
-        rounds = settings2.get_values_int("rounds")
-        delay = settings2.get_values_int("delay")
-        return render_template("index.html",nodes=nodes, rounds=rounds, delay=delay)
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-@app.route('/about')
-def about():
-    return render_template("about.html")
-
-@app.route('/settings', methods=['GET','POST'])
-@login_required
-def settings():
-    if current_user.is_authenticated:
+    form = LoginForm()
+    if current_user.is_authenticated:   
+        start = False
+        start_2 = False
+        player = None
+        nodes = None
+        rounds = None
+        distance = None
+        delay = None
+        node_1 = True
+        node_2 = True
+        node_3 = True
+        node_4 = True
+        node_5 = True
+        labels = []	
+        labels_2 = settings2.get_times()
+        labels_2 = labels_2[1]
+        for i in range(0,labels_2):
+            labels.append(i)
+        values_2 = settings2.get_times()
+        values_2 = values_2[3:]
+        values = []
+        for i in values_2:
+            if i != "":
+                values.append(i) 
+        nodes_list = []
         nodes = settings2.get_values_int("nodes")
         rounds = settings2.get_values_int("rounds")
         delay = settings2.get_values_int("delay")
         distance = settings2.get_values_int("distance")
-
         if request.method == 'POST':
-            rounds_input = request.form['rounds']
-            nodes_input = request.form['nodes']
-            delay_input = request.form['delay']
-            distance_input = request.form['distance']
+            player = request.form['player']
+            nodes = request.form['nodes']
+            rounds = request.form['duration']
+            delay = request.form['time_sleep']
+            distance = request.form['sensitivity']
 
-            # Update sql database
-            settings2.update_values("nodes",int(nodes_input))
-            settings2.update_values("rounds",int(rounds_input))
-            settings2.update_values("delay",int(delay_input))
-            #settings2.update_values("distance",int(distance_input))
+            settings2.update_values("nodes",int(nodes))
+            settings2.update_values("rounds",int(rounds))
+            settings2.update_values("delay",int(delay)) 
+            settings2.update_values("distance",int(distance)) 
 
-            # Read new values from sql database
-            nodes = settings2.get_values_int("nodes")
-            rounds = settings2.get_values_int("rounds")
-            delay = settings2.get_values_int("delay")
-            distance = settings2.get_values_int("distance")
+            labels = []	
+            labels_2 = settings2.get_times()
+            labels_2 = labels_2[1]
+            for i in range(1,labels_2+1):
+            #for i in range(0,labels_2):
+                labels.append(i)
+            values_2 = settings2.get_times()
+            values_2 = values_2[3:]
+            values = []
+            for i in values_2:
+                if i != "":
+                    values.append(i) 
+            ish = "hejsan" 
+            for x in range(1, int(nodes) + 1):
+                nodes_list.append(x)
+            
+            if player != "":
+                flash("Start")
+                start = True
+                trainer2.read_settings()
+                t1 = threading.Thread(target=trainer2.main)
+                t1.daemon = True
+                t1.start()
+                t1.join()
+            else:
+                start_2 = True
+                flash("Incomplete form")
 
-        return render_template("settings.html", nodes=nodes, rounds=rounds, delay=delay, distance=distance)
-    return render_template("index.html")
+        split_time = times2.print_split_times()
+        settings2.update_times(split_time)
+        nodes = settings2.get_values_int("nodes")
+        rounds = settings2.get_values_int("rounds")
+        delay = settings2.get_values_int("delay")
+        distance = settings2.get_values_int("distance")
+	
+            #return flask.render_template('makkan.html', form=form,start_2=start_2, start=start, nodes_list=nodes_list, player=player, nodes=nodes, time_sleep=delay, duration=rounds, sensitivity=distance\
+                #, node_1=node_1, node_2=node_2, node_3=node_3, node_4=node_4, node_5=node_5)
+        
+        return flask.render_template('makkan.html',values=values, labels=labels, form=form,start_2=start_2, start=start, nodes_list=nodes_list, player=player, nodes=nodes, delay=delay, rounds=rounds, distance=distance\
+            , node_1=node_1, node_2=node_2, node_3=node_3, node_4=node_4, node_5=node_5)
+#     #print(request.method)
+#     #print (times2.print_total_time())
+    
+#         # if request.method == 'POST':
+#         #     status = request.form['start_button']
 
-@app.route('/highscore')
-@login_required
-def highscore():
-    return render_template("highscore.html")
+#         #     if status == 'Clear':
+#         #         print ("Clearing")
+#         #         total_time = ""
+#         #         split_time = []
+#         #         return render_template("index.html", time=total_time, split=split_time)
 
-@app.route('/sign-up',methods=['POST','GET'])
-def signUp():
-    try:
-        _name = request.form['inputName']
-        _email = request.form['inputEmail']
-        _password = request.form['inputPassword']
+#         #     if status == 'Start':
 
-        # validate the received values
-        if _name and _email and _password:
+#         #         t1 = threading.Thread(target=trainer2.main)
+#         #         t1.daemon = True
+#         #         t1.start()
+#         #         t1.join()
 
-            # All Good, let's call the MySQL
+#         #         total_time = times2.print_total_time()
+#         #         split_time = times2.print_split_times()
+#         return render_template("index.html")#, total_time=total_time, split=split_time)
+    
+#     #total_time = times2.print_total_time()
+#     #split_time = times2.print_split_times()
+#     #return render_template("index.html", time=total_time, split=split_time)
+#         #return render_template("index.html")
 
-            with closing(mysql.connect()) as conn:
-                with closing(conn.cursor()) as cursor:
-                    _hashed_password = generate_password_hash(_password)
-                    cursor.callproc('sp_createUser',(_name,_email,_hashed_password))
-                    data = cursor.fetchall()
+# @app.route('/logout')
+# @login_required
+# def logout():
+#     logout_user()
+#     return redirect(url_for('login'))
 
-                    if len(data) is 0:
-                        conn.commit()
-                        return json.dumps({'message':'User created successfully!'})
-                    else:
-                        return json.dumps({'error':str(data[0])})
-        else:
-            return json.dumps({'html':'<span>Enter the required fields</span>'})
+# @app.route('/test', methods=['GET','POST'])
+# def test():
+#     #print(request.method)
+#     #print (times2.print_total_time())
+    
+#     if request.method == 'POST':
+#         nodes = int(request.form['nodes'])
+#         rounds = int(request.form['rounds'])
 
-    except Exception as e:
-        return json.dumps({'error':str(e)})
+#         if nodes > 0 and rounds >0:
+#             t1 = threading.Thread(target=trainer2.main)
+#             t1.daemon = True
+#             t1.start()
+#             t1.join()
+
+#             total_time = times2.print_total_time()
+#             split_time = times2.print_split_times()
+#             return render_template("test.html", total_time = total_time, split=split_time)
 
 
+#     return render_template("test.html")
+
+# @app.route('/about')
+# def about():
+#     return render_template("about.html")
+
+# @app.route('/settings')
+# def settings():
+#     return render_template("settings.html")
+
+# @app.route('/highscore')
+# def highscore():
+#     return render_template("highscore.html")
+
+# @app.route('/sign-up',methods=['POST','GET'])
+# def signUp():
+#     try:
+#         _name = request.form['inputName']
+#         _email = request.form['inputEmail']
+#         _password = request.form['inputPassword']
+
+#         # validate the received values
+#         if _name and _email and _password:
+
+#             # All Good, let's call the MySQL
+
+#             with closing(mysql.connect()) as conn:
+#                 with closing(conn.cursor()) as cursor:
+#                     _hashed_password = generate_password_hash(_password)
+#                     cursor.callproc('sp_createUser',(_name,_email,_hashed_password))
+#                     data = cursor.fetchall()
+
+#                     if len(data) is 0:
+#                         conn.commit()
+#                         return json.dumps({'message':'User created successfully!'})
+#                     else:
+#                         return json.dumps({'error':str(data[0])})
+#         else:
+#             return json.dumps({'html':'<span>Enter the required fields</span>'})
+
+#     except Exception as e:
+#         return json.dumps({'error':str(e)})
+
+
+
+if __name__ == '__main__':
+    #app.run(debug=True)
+    app.run(host='192.168.4.1')
