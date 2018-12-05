@@ -24,16 +24,20 @@ String node = "NODE-3";
 
 String node_on = node + "-ON";
 String node_off = node + "-OFF";
+String node_standby = node + "-STANDBY";
 
 #define echoPin D3 // Echo Pin
 #define trigPin D4 // Trigger Pin
 
-#define NUM_PIXELS 16
+#define NUM_PIXELS 24
 
 long duration, distance; // Duration used to calculate distance
-int max_time = 250;
+int max_time = 500;
 int loops = 0;
 int distance_limit = 20;
+int ind1;
+String message;
+
  
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -90,7 +94,7 @@ void setColor(uint32_t color) {
 }
 
 
-void measure_distance() {
+void measure_distance(int distance_limit) {
   distance = 100;
   while (distance > distance_limit)
   {
@@ -121,34 +125,40 @@ void measure_distance() {
 void callback(char* topic, byte* payload, unsigned int length) {
 
   int i = 0;
-
-  //Serial.println("Message arrived:  topic: " + String(topic));
-  //Serial.println("Length: " + String(length,DEC));
   
   // create character buffer with ending null terminator (string)
   for(i=0; i<length; i++) {
     message_buff[i] = payload[i];
   }
   message_buff[i] = '\0';
-  
   String msgString = String(message_buff);
   Serial.println(msgString);
-  if (msgString==node_on) {
-    Serial.println("on");
-    //digitalWrite(LED_BUILTIN, LOW);
+
+  // find message and distance
+  ind1 = msgString.indexOf(';');  //finds location of first ,
+  message = msgString.substring(0, ind1);   //captures first data String
+  distance_limit = msgString.substring(ind1+1).toInt();   //captures first data String
+
+  if (message==node_on) {
     setColor(pixels.Color(100, 0, 0));
-    state = msgString;
-    measure_distance();
+    //state = msgString;
+    measure_distance(distance_limit);
     client.publish(topic, (char*) node_off.c_str(), false);
-  } else if (msgString=="OFF") {
-    Serial.println("off");
-    //digitalWrite(LED_BUILTIN,HIGH);
+    
+  } else if (message=="OFF") {
     setColor(pixels.Color(0, 0, 0));
-  } else if (msgString=="START") {
-    Serial.println("Start sequence initiated");
+    
+  } else if (message==node_off) {
+    setColor(pixels.Color(0, 0, 0));
+    
+  } else if (message==node_standby) {
+    Serial.println("standby");
+    setColor(pixels.Color(255, 255, 0));
+    
+  } else if (message=="START") {
     start_sq();
-  } else if (msgString=="FINISHED") {
-    Serial.println("Program finished");
+    
+  } else if (message=="FINISHED") {
     finish_sq();
   }
   //Serial.println("Payload: " + msgString);
