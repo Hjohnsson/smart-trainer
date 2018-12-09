@@ -12,7 +12,8 @@
 
 const char* ssid = "SmartTrainer";
 const char* password =  "runforestrun";
-const char* mqttServer = "192.168.1.20";
+//const char* mqttServer = "192.168.1.20";
+const char* mqttServer = "192.168.4.1";
 
 //IPAddress mqttServer(192,168,4,1);
 const int mqttPort = 1883;
@@ -20,7 +21,7 @@ const char* mqttUser = "guest";
 const char* mqttPassword = "guest";
 char message_buff[100];
 String state = "";
-String node = "NODE-3";
+String node = "NODE-1";
 
 String node_on = node + "-ON";
 String node_off = node + "-OFF";
@@ -32,7 +33,7 @@ String node_standby = node + "-STANDBY";
 #define NUM_PIXELS 24
 
 long duration, distance; // Duration used to calculate distance
-int max_time = 500;
+int max_time = 1500;
 int loops = 0;
 int distance_limit = 20;
 int ind1;
@@ -107,7 +108,7 @@ void measure_distance(int distance_limit) {
     //Calculate the distance (in cm) based on the speed of sound.
     distance = duration/58.2;
     Serial.println(distance);
-    delay(10);
+    delay(3);
     loops = loops + 1;
     if ( max_time < loops) {
       loops = 0;
@@ -187,7 +188,7 @@ void setup() {
   while (!client.connected()) {
     Serial.println("Connecting to MQTT...");
  
-    if (client.connect("Training-NODE-3")) {
+    if (client.connect("Training-NODE-1")) {
  
       Serial.println("connected");  
  
