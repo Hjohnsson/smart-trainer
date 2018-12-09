@@ -156,6 +156,7 @@ def on_message_program_1(client, userdata, msg):
         times2.print_total_time()
         program_1_state = ""
         client.disconnect()
+        loops = 0
         return
 
 def on_message_program_2(client, userdata, msg):

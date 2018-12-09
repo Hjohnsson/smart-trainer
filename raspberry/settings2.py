@@ -38,14 +38,24 @@ def update_values(name,value):
     return
 
 def update_times(values):
+    print ("updating split times")
+    print (values)
     db = MySQLdb.connect(host="localhost",
          user = "pi",
          passwd = "herman93",
          db = "SmartTrainer")
 
     cur = db.cursor()
+
     x = 0
-    for i in values[3:]:
+    for i in range(19):
+        x += 1
+        t = "T"+str(x)
+        cur.execute("""UPDATE tbl_times SET %s=%s WHERE Player='Zlatan'""" % (t, 0))
+
+    x = 0
+    #for i in values[3:]:
+    for i in values:
         x += 1
         t = "T"+str(x)
         cur.execute("""UPDATE tbl_times SET %s=%s WHERE Player='Zlatan'""" % (t, i))

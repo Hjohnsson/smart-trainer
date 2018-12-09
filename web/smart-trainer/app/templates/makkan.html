@@ -188,10 +188,18 @@
                     <h4>Sensitivity</h4>
                     <input name="sensitivity" type="range" min="5" max="100" step="5" value="{{distance}}" class="slider" id="numSense" style="width: 400px"><p id="showNumSense"></p> 
                     </div>
+                    <div class="selectionWidth">
+                        <h4>Program</h4>
+                        <select class="form-control" id="sel1" name="program">
+                            <option value="random">Random</option>
+                            <option value="program_1">5-10-5</option>
+                            <option value="program_2">Sprint 10 m</option>
+                        </select>
+                    </div>
                     <div class="selectionWidth" style="color:black">
                     <button class="btn btn-lg btn-primary" type="submit">Start</button>
                     <button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#exampleModal">
-                            Avbryt
+                            Result
                           </button>
                     </div>
                 </form>
@@ -208,7 +216,7 @@
                   {% if messages %}
                     {% for message in messages %}
                 
-                      <h5>{{ message }}</h5>
+                      <h3>{{ message }}</h3>
                     {% endfor %}
                 
                   {% endif %}
@@ -255,6 +263,7 @@
         </div>
         <div>
                 <div class="mypanel"></div>
+            <h3><strong>Total time: </strong>{{ total_time }}</h3>
             <p><strong>Player: </strong>{{ player }}</p>
             <p><strong>Nodes: </strong>{{ nodes }}</p>
             <p><strong>Rounds: </strong>{{ rounds }}</p>
@@ -263,7 +272,7 @@
 </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary">Save result</button>
         </div>
         </div>
     </div>

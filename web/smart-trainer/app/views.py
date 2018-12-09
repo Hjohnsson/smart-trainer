@@ -143,17 +143,25 @@ def home():
         node_3 = True
         node_4 = True
         node_5 = True
+
+        """
+        split_time = times2.print_split_times()
+        split_time_len = (len(split_time))
+
         labels = []	
         labels_2 = settings2.get_times()
         labels_2 = labels_2[1]
-        for i in range(0,labels_2):
-            labels.append(i)
+        #for i in range(0,labels_2):
+        for i in range(0,split_time_len):
+            labels.append(i+1)
+
         values_2 = settings2.get_times()
-        values_2 = values_2[3:]
+        values_2 = values_2[3:split_time_len+3]
         values = []
         for i in values_2:
             if i != "":
                 values.append(i) 
+        """
         nodes_list = []
         nodes = settings2.get_values_int("nodes")
         rounds = settings2.get_values_int("rounds")
@@ -165,20 +173,24 @@ def home():
             rounds = request.form['duration']
             delay = request.form['time_sleep']
             distance = request.form['sensitivity']
+            program = request.form['program']
 
             settings2.update_values("nodes",int(nodes))
             settings2.update_values("rounds",int(rounds))
             settings2.update_values("delay",int(delay)) 
             settings2.update_values("distance",int(distance)) 
 
+            split_time = times2.print_split_times()
+            split_time_len = (len(split_time))
+
             labels = []	
             labels_2 = settings2.get_times()
             labels_2 = labels_2[1]
-            for i in range(1,labels_2+1):
+            for i in range(0,split_time_len):
             #for i in range(0,labels_2):
-                labels.append(i)
+                labels.append(i+1)
             values_2 = settings2.get_times()
-            values_2 = values_2[3:]
+            values_2 = values_2[3:split_time_len+3]
             values = []
             for i in values_2:
                 if i != "":
@@ -188,29 +200,48 @@ def home():
                 nodes_list.append(x)
             
             if player != "":
-                flash("Start")
                 start = True
                 trainer2.read_settings()
-                t1 = threading.Thread(target=trainer2.main)
+                t1 = threading.Thread(target=trainer2.main(program))
                 t1.daemon = True
                 t1.start()
                 t1.join()
+                split_time = times2.print_split_times()
+                settings2.update_times(split_time)
+                flash("Total time: %s " % times2.print_total_time())
             else:
                 start_2 = True
                 flash("Incomplete form")
 
         split_time = times2.print_split_times()
+        split_time_len = (len(split_time))
+
+        labels = []	
+        labels_2 = settings2.get_times()
+        labels_2 = labels_2[1]
+        #for i in range(0,labels_2):
+        for i in range(0,split_time_len):
+            labels.append(i+1)
+
+        values_2 = settings2.get_times()
+        values_2 = values_2[3:split_time_len+3]
+        values = []
+        for i in values_2:
+            if i != "":
+                values.append(i) 
+
         settings2.update_times(split_time)
         nodes = settings2.get_values_int("nodes")
         rounds = settings2.get_values_int("rounds")
         delay = settings2.get_values_int("delay")
         distance = settings2.get_values_int("distance")
+        total_time = times2.print_total_time()
 	
             #return flask.render_template('makkan.html', form=form,start_2=start_2, start=start, nodes_list=nodes_list, player=player, nodes=nodes, time_sleep=delay, duration=rounds, sensitivity=distance\
                 #, node_1=node_1, node_2=node_2, node_3=node_3, node_4=node_4, node_5=node_5)
         
         return flask.render_template('makkan.html',values=values, labels=labels, form=form,start_2=start_2, start=start, nodes_list=nodes_list, player=player, nodes=nodes, delay=delay, rounds=rounds, distance=distance\
-            , node_1=node_1, node_2=node_2, node_3=node_3, node_4=node_4, node_5=node_5)
+            , node_1=node_1, node_2=node_2, node_3=node_3, node_4=node_4, node_5=node_5, total_time=total_time,split_time_len = split_time_len)
 #     #print(request.method)
 #     #print (times2.print_total_time())
     
