@@ -209,6 +209,8 @@ def home():
                 split_time = times2.print_split_times()
                 settings2.update_times(split_time)
                 flash("Total time: %s " % times2.print_total_time())
+                if program == "program_1":
+                    settings2.update_score(player,times2.print_total_time(),split_time[0],split_time[1],split_time[2])
             else:
                 start_2 = True
                 flash("Incomplete form")
@@ -306,9 +308,11 @@ def home():
 # def settings():
 #     return render_template("settings.html")
 
-# @app.route('/highscore')
-# def highscore():
-#     return render_template("highscore.html")
+@app.route('/highscore')
+def highscore():
+    fetch = settings2.get_rows()
+    length = len(fetch)
+    return render_template("highscore.html", values=fetch, length=length)
 
 # @app.route('/sign-up',methods=['POST','GET'])
 # def signUp():

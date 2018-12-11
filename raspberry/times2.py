@@ -52,7 +52,7 @@ def print_total_time():
     end_dt = dt.datetime.strptime(line2, '%H:%M:%S.%f')
     diff = (end_dt - start_dt)
     diff.seconds/60
-    print ("Total tid: " + str(diff)[5:])
+    #print ("Total tid: " + str(diff)[5:])
 
     # Alternativ beräkning av totaltid
     #

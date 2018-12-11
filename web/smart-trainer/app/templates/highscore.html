@@ -9,7 +9,7 @@
         <div class="row justify-content-center">
             <div class="title col-6 col-lg-8">
                 <h2 class="align-center pb-2 mbr-fonts-style display-2">Highscore</h2>
-                <h3 class="mbr-section-subtitle align-center pb-5 mbr-light mbr-fonts-style display-5">Top 10 highscores!</h3>
+                <h3 class="mbr-section-subtitle align-center pb-5 mbr-light mbr-fonts-style display-5">Top 20 highscores!</h3>
             </div>
         </div>
     </div>
@@ -23,28 +23,60 @@
         <thead>
           <tr class="table-heads ">
           <th class="head-item mbr-fonts-style display-7">PLACE</th>
+          <th class="head-item mbr-fonts-style display-7">DATE</th>
           <th class="head-item mbr-fonts-style display-7">NAME</th>
-          <th class="head-item mbr-fonts-style display-7">TIME</th>
-          <th class="head-item mbr-fonts-style display-7">ROUNDS</th>
-          <th class="head-item mbr-fonts-style display-7">NODES</th>
+          <th class="head-item mbr-fonts-style display-7">TOTALTIME</th>
+          <th class="head-item mbr-fonts-style display-7">TIME 1</th>
+          <th class="head-item mbr-fonts-style display-7">TIME 2</th>
+          <th class="head-item mbr-fonts-style display-7">TIME 3</th>
         </thead>
         <tbody>
-            <tr><td class="body-item mbr-fonts-style display-7">1</td><td class="body-item mbr-fonts-style display-7">Herman</td><td class="body-item mbr-fonts-style display-7">10.0</td><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">2</td></tr>
-            <tr><td class="body-item mbr-fonts-style display-7">2</td><td class="body-item mbr-fonts-style display-7">Herman</td><td class="body-item mbr-fonts-style display-7">11.0</td><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">2</td></tr>
-            <tr><td class="body-item mbr-fonts-style display-7">3</td><td class="body-item mbr-fonts-style display-7">Herman</td><td class="body-item mbr-fonts-style display-7">12.0</td><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">2</td></tr>
-            <tr><td class="body-item mbr-fonts-style display-7">4</td><td class="body-item mbr-fonts-style display-7">Herman</td><td class="body-item mbr-fonts-style display-7">13.0</td><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">2</td></tr>
-            <tr><td class="body-item mbr-fonts-style display-7">5</td><td class="body-item mbr-fonts-style display-7">Herman</td><td class="body-item mbr-fonts-style display-7">14.0</td><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">2</td></tr>
-            <tr><td class="body-item mbr-fonts-style display-7">6</td><td class="body-item mbr-fonts-style display-7">Herman</td><td class="body-item mbr-fonts-style display-7">15.0</td><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">2</td></tr>
-            <tr><td class="body-item mbr-fonts-style display-7">7</td><td class="body-item mbr-fonts-style display-7">Herman</td><td class="body-item mbr-fonts-style display-7">16.0</td><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">2</td></tr>
-            <tr><td class="body-item mbr-fonts-style display-7">8</td><td class="body-item mbr-fonts-style display-7">Herman</td><td class="body-item mbr-fonts-style display-7">17.0</td><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">2</td></tr>
-            <tr><td class="body-item mbr-fonts-style display-7">9</td><td class="body-item mbr-fonts-style display-7">Herman</td><td class="body-item mbr-fonts-style display-7">18.0</td><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">2</td></tr>
-            <tr><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">Herman</td><td class="body-item mbr-fonts-style display-7">19.0</td><td class="body-item mbr-fonts-style display-7">10</td><td class="body-item mbr-fonts-style display-7">2</td></tr>
-        </tbody>
+            {% for i in values %}
+              <tr><td class="body-item mbr-fonts-style display-7">{{loop.index}}</td>
+              <td class="body-item mbr-fonts-style display-7">{{values[loop.index0][2]}}</td>
+              <td class="body-item mbr-fonts-style display-7">{{values[loop.index0][1]}}</td>
+              <td class="body-item mbr-fonts-style display-7">{{values[loop.index0][3]}}</td>
+              <td class="body-item mbr-fonts-style display-7">{{values[loop.index0][4]}}</td>
+              <td class="body-item mbr-fonts-style display-7">{{values[loop.index0][5]}}</td>
+              <td class="body-item mbr-fonts-style display-7">{{values[loop.index0][6]}}</td></tr>
+            {% endfor %}
+          </tbody>
       </table>
     </div>
   </div>
 </section>
 
+<section class="mbr-section form3 cid-r47rnLwSFj" id="form3-a">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="title col-6 col-lg-8">
+                <h3 class="mbr-section-subtitle align-center pb-5 mbr-light mbr-fonts-style display-5">Reference table</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-table cid-r47nAuYJlF" id="table1-7">
+    <div class="container container-table">
+      <div class="container scroll">
+        <table class="table isSearch" cellspacing="0">
+          <thead>
+            <tr class="table-heads ">
+            <th class="head-item mbr-fonts-style display-7">TIME</th>
+            <th class="head-item mbr-fonts-style display-7">RESULT</th>
+          </thead>
+          <tbody>
+                <tr><td class="body-item mbr-fonts-style display-7">3.9-4.0</td><td class="body-item mbr-fonts-style display-7">Elite</td></tr>
+                <tr><td class="body-item mbr-fonts-style display-7">4.0-4.2</td><td class="body-item mbr-fonts-style display-7">Pro</td></tr>
+                <tr><td class="body-item mbr-fonts-style display-7">4.2-4.6</td><td class="body-item mbr-fonts-style display-7">Good</td></tr>
+                <tr><td class="body-item mbr-fonts-style display-7">4.6-5.0</td><td class="body-item mbr-fonts-style display-7">Ok</td></tr>
+                <tr><td class="body-item mbr-fonts-style display-7">5.0-5.4</td><td class="body-item mbr-fonts-style display-7">Below average</td></tr>
+                <tr><td class="body-item mbr-fonts-style display-7">5.4 and above</td><td class="body-item mbr-fonts-style display-7">Poor</td></tr>
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
 {% endblock %}
 

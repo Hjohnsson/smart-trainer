@@ -38,8 +38,8 @@ def update_values(name,value):
     return
 
 def update_times(values):
-    print ("updating split times")
-    print (values)
+    #print ("updating split times")
+    #print (values)
     db = MySQLdb.connect(host="localhost",
          user = "pi",
          passwd = "herman93",
@@ -59,6 +59,29 @@ def update_times(values):
         x += 1
         t = "T"+str(x)
         cur.execute("""UPDATE tbl_times SET %s=%s WHERE Player='Zlatan'""" % (t, i))
+
+    db.commit()
+    db.close()
+    return
+
+def get_rows():
+    value = []
+    cur = db_connect()
+    cur.execute("SELECT * FROM tbl_5105_highscore ORDER by TotalTime LIMIT 20")
+    values = cur.fetchall()
+    for i in values:
+        value.append(i)
+
+    return value
+
+def update_score(name,totaltime,t1,t2,t3):
+    db = MySQLdb.connect(host="localhost",
+         user = "pi",
+         passwd = "herman93",
+         db = "SmartTrainer")
+
+    cur = db.cursor()
+    cur.execute("""INSERT INTO tbl_5105_highscore (PlayerName,TotalTime,Time_1,Time_2,Time_3) VALUES ('%s',%s,%s,%s,%s)""" % (name,totaltime,t1,t2,t3))
 
     db.commit()
     db.close()
@@ -84,4 +107,12 @@ def get_times():
 #update_values("nodes",3)
 #get_values_int("nodes")
 
+
+#update_score('asd',20.0,3.0,4.0,3.0)
+
+#fetch = get_rows()
+
+#for i in range(len(fetch)):
+        #for x in range(7):
+                #print (fetch[i][x])
 
