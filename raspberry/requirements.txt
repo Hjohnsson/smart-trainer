@@ -29,7 +29,7 @@ cd /home/pi
 git clone https://github.com/Hjohnsson/smart-trainer.git
 cd /home/pi/smart-trainer/raspberry/
 
-# installera mysql
+# install mysql
 sudo apt-get install mysql-server
 
 sudo mysql -uroot -p
@@ -46,3 +46,7 @@ sudo ./import_sql_database.sh
 # export FLASK_DEBUG=1
 # export FLASK_APP=views.py
 # flask run --host=0.0.0.0
+
+# Make flask run at startup
+# Add this line to /etc/rc.local before "exit 0"
+# bash /home/pi/smart-trainer/raspberry/deploy-smart-trainer
