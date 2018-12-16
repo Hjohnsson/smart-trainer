@@ -1,0 +1,10 @@
+cd /srv/smart-trainer
+
+source bin/activate
+
+cd /srv/smart-trainer/smart-trainer/app
+
+export FLASK_APP=views.py
+export FLASK_DEBUG=0
+
+nohup flask run --host=0.0.0.0 > /dev/null 2>&1 &

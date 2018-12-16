@@ -22,6 +22,7 @@ pip3 install flask_login
 pip3 install flask_sqlalchemy
 pip3 install flask_table
 pip3 install flask_bootstrap
+pip3 install --upgrade RPi.GPIO
 
 # check out git
 cd /home/pi

@@ -9,6 +9,7 @@ import random
 import times2
 import settings2
 import threading
+import display
 
 
 loops = 0  # keep track of how many rounds thats been run
@@ -109,6 +110,7 @@ def on_message_random(client, userdata, msg):
             times2.print_total_time()
             loops = 0
             client.disconnect()
+            display.display_time()
             #exit()
             return
         else:
@@ -156,6 +158,7 @@ def on_message_program_1(client, userdata, msg):
         times2.print_total_time()
         program_1_state = ""
         client.disconnect()
+        display.display_time()
         loops = 0
         return
 
@@ -185,6 +188,7 @@ def on_message_program_2(client, userdata, msg):
         times2.print_split_times()
         times2.print_total_time()
         client.disconnect()
+        display.display_time()
         loops = 0
         return
 
