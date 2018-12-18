@@ -158,21 +158,31 @@
             
 <div>
                 <div>
-                <div style="text-align:center">
+                <!-- <div style="text-align:center">
                         <h1>Active nodes<h1>
                         {% for i in  nodes_list %}
                         <span class="dot{{ i }}"></span>
                         {% endfor %}
-                      </div>
+                      </div> -->
                 <div class="container-fluid" style="margin-left: 400px">
-                <form method="POST" action"/login">
+                <form method="POST" action="/home">
                     <div>
                     <h4>Player</h4>
                     <input class="selectionWidth" type="text" placeholder="Player name" name="player" style="color:black"></input>
                 <br>    
                 </div>
+                <div class="selectionWidth">
+                        <h4>Program</h4>
+                        <select class="form-control" id="sel1" name="program">
+                            <option value="random">Random</option>
+                            <option value="program_1" selected="selected">5-10-5</option>
+                            <option value="program_2">Sprint 10 m</option>
+                            
+                        </select>
+                    </div><br>
+                    <div class="colors Random" id="Random">
                     <div>
-                        <br>
+                        
                         <h4>Nodes</h4>
                         <input type="range" min="1" max="3" value="{{nodes}}" class="slider" id="numNodes" name="nodes" style="width: 400px"><p id="showNumNodes"></p> 
                         <div>
@@ -188,13 +198,8 @@
                     <h4>Sensitivity</h4>
                     <input name="sensitivity" type="range" min="5" max="100" step="5" value="{{distance}}" class="slider" id="numSense" style="width: 400px"><p id="showNumSense"></p> 
                     </div>
-                    <div class="selectionWidth">
-                        <h4>Program</h4>
-                        <select class="form-control" id="sel1" name="program">
-                            <option value="random">Random</option>
-                            <option value="program_1">5-10-5</option>
-                            <option value="program_2">Sprint 10 m</option>
-                        </select>
+                    </div>
+                    </div>
                     </div>
                     <div class="selectionWidth" style="color:black">
                     <button class="btn btn-lg btn-primary" type="submit">Start</button>
@@ -260,23 +265,25 @@
         </div>
         <div class="modal-body">
         <canvas id="lineChart"></canvas>
-        </div>
-        <div>
-                <div class="mypanel"></div>
+        
+            <!-- <div class="mypanel"></div> -->
             <h3><strong>Total time: </strong>{{ total_time }}</h3>
             <p><strong>Player: </strong>{{ player }}</p>
+            <div class="colors Random" id="Random">
             <p><strong>Nodes: </strong>{{ nodes }}</p>
             <p><strong>Rounds: </strong>{{ rounds }}</p>
             <p><strong>Delay: </strong>{{ delay }}</p>
             <p><strong>Sensitivity: </strong>{{ distance }}</p>
-</div>
+            </div>
+        </div>    
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary">Save result</button>
         </div>
-        </div>
-    </div>
-    </div>
+        
+
+    </div></div></div>
+    
 </body>
 
 <script>
@@ -339,5 +346,17 @@ output.innerHTML = slider.value; // Display the default slider value
 slider.oninput = function() {
     output.innerHTML = this.value;
 } 
+
+
+
+$(function(){
+          $('#sel1').change(function(){
+            var selected = $(this).find(':selected').text();
+            //alert(selected);
+            $(".colors").hide();
+            $('.' + selected).show();
+          }).change()
+});
+
 </script>
 {% endblock %}

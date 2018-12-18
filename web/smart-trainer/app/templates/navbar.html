@@ -63,9 +63,14 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="#">Graphs</a></li>
-
+        {% if home_active %}
+        <li class="active"><a href="/home">Home</a></li>
+        <li><a href="/highscore">Highscore</a></li>
+        {% endif %}
+        {% if high_active %}
+        <li><a href="/home">Home</a></li>
+        <li class="active"><a href="/highscore">Highscore</a></li>
+        {% endif %}
       </ul>
 
 
@@ -75,7 +80,7 @@
                     <span class="glyphicon glyphicon-log-in"></span>     Login
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown"style="width: 200px;" >
-                    <form method="POST" action"/login" style="margin-right: 10px; margin-left: 10px">
+                    <form method="POST" action="/login" style="margin-right: 10px; margin-left: 10px">
                         {{ form.hidden_tag() }}
                         {{ wtf.form_field(form.username) }}
                         {{ wtf.form_field(form.password) }}

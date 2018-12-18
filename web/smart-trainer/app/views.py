@@ -131,6 +131,7 @@ def node_func():
 def home():
     form = LoginForm()
     if current_user.is_authenticated:   
+        home_active = True
         start = False
         start_2 = False
         player = None
@@ -231,6 +232,9 @@ def home():
         for i in values_2:
             if i != "":
                 values.append(i) 
+        program_value = False
+        if request.form.get("program") == "Random":
+            program_value = True
 
         settings2.update_times(split_time)
         nodes = settings2.get_values_int("nodes")
@@ -242,7 +246,7 @@ def home():
             #return flask.render_template('makkan.html', form=form,start_2=start_2, start=start, nodes_list=nodes_list, player=player, nodes=nodes, time_sleep=delay, duration=rounds, sensitivity=distance\
                 #, node_1=node_1, node_2=node_2, node_3=node_3, node_4=node_4, node_5=node_5)
         
-        return flask.render_template('makkan.html',values=values, labels=labels, form=form,start_2=start_2, start=start, nodes_list=nodes_list, player=player, nodes=nodes, delay=delay, rounds=rounds, distance=distance\
+        return flask.render_template('makkan.html',home_active=home_active, program_value=program_value,values=values, labels=labels, form=form,start_2=start_2, start=start, nodes_list=nodes_list, player=player, nodes=nodes, delay=delay, rounds=rounds, distance=distance\
             , node_1=node_1, node_2=node_2, node_3=node_3, node_4=node_4, node_5=node_5, total_time=total_time,split_time_len = split_time_len)
 #     #print(request.method)
 #     #print (times2.print_total_time())
@@ -308,11 +312,15 @@ def home():
 # def settings():
 #     return render_template("settings.html")
 
+
 @app.route('/highscore')
-def highscore():
+@login_required
+def test():
+    form = LoginForm()
     fetch = settings2.get_rows()
     length = len(fetch)
-    return render_template("highscore.html", values=fetch, length=length)
+    high_active = True
+    return render_template("top.html", values=fetch, length=length, form=form, high_active=high_active)
 
 # @app.route('/sign-up',methods=['POST','GET'])
 # def signUp():

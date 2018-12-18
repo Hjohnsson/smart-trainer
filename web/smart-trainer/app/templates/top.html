@@ -1,0 +1,61 @@
+{% extends "navbar.html" %}
+{% block page_content %}
+
+
+<body background="{{ url_for('static', filename='back-body-bodybuilding-28061.jpg') }}" style="color:white">
+    <div class="container-fluid text-center" style="min-height: 800px;">    
+        <div class="row">
+          <div class="col-sm-2">
+          </div>
+            <div class="col-sm-8 text-left"> 
+                    <div style="text-align:center">
+                            <h1>Highscore<h1>
+                            <h3>Top 20<h3>
+                    </div>
+            </div>
+        </div>
+    
+    
+            <div style="margin-left:20%; margin-right:20%">
+              <table class="table table-dark">
+                <thead>
+                  <tr>
+                  <th scope="col" style="text-align: center">PLACE</th>
+                  <th scope="col" style="text-align: center">DATE</th>
+                  <th scope="col" style="text-align: center">NAME</th>
+                  <th scope="col" style="text-align: center">TOTALTIME</th>
+                  <th scope="col" style="text-align: center">TIME 1</th>
+                  <th scope="col" style="text-align: center">TIME 2</th>
+                  <th scope="col" style="text-align: center">TIME 3</th>
+                </thead>
+                <tbody>
+                    {% for i in values %}
+                      <tr><td>{{loop.index}}</td>
+                      <td>{{values[loop.index0][2]}}</td>
+                      <td>{{values[loop.index0][1]}}</td>
+                      <td>{{values[loop.index0][3]}}</td>
+                      <td>{{values[loop.index0][4]}}</td>
+                      <td>{{values[loop.index0][5]}}</td>
+                      <td>{{values[loop.index0][6]}}</td></tr>
+                    {% endfor %}
+                  </tbody>
+              </table>
+            </div>
+   
+        </div>
+    <footer class="container-fluid text-center">
+        <p>Smart Trainer</p>
+    </footer>
+      
+</body>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

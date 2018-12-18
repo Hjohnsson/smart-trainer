@@ -3,6 +3,8 @@ import tm1637
 import time
 import trainer2
 import times2
+import threading
+
 
 GPIO.setmode(GPIO.BCM)
 
@@ -32,19 +34,34 @@ def start_button():
 
     if program == 0 and x == 1:
         print ("Starting program: Random")
-        trainer2.main("random")
+        #trainer2.main("random")
+        th1 = threading.Thread(target=trainer2.main("random"))
+        th1.daemon = True
+        th1.start()
+        #t1.join()
     elif program == 1 and x == 1:
         print ("Starting program: 5-10-5")
-        trainer2.main("program_1")
+        #trainer2.main("program_1")
+        th2 = threading.Thread(target=trainer2.main("program_1"))
+        th2.daemon = True
+        th2.start()
+        #t2.join()
     elif program == 2 and x == 1:
         print ("Starting program: Sprint 10 meter")
-        trainer2.main("program_2")
+        #trainer2.main("program_2")
+        th3 = threading.Thread(target=trainer2.main("program_2"))
+        th3.daemon = True
+        th3.start()
+
+        #t3.join()
 
     display_time()
 
 def stop_button():
-    print("Stopp button")
+    print("Stop button")
     Display.Clear()
+
+    
 
 
 def change_button():
