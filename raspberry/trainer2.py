@@ -61,7 +61,7 @@ def on_connect_program_1(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
     client.subscribe("wemos")
     #time.sleep(0.5)
-    client.publish("wemos","NODE-1-STANDBY")
+    client.publish("wemos","NODE-1-ON;30")
     program_1_state = "step1"
 
 
@@ -73,7 +73,7 @@ def on_connect_program_2(client, userdata, flags, rc):
 
     client.subscribe("wemos")
     #time.sleep(0.5)
-    client.publish("wemos","NODE-1-STANDBY")
+    client.publish("wemos","NODE-1-ON;30")
 
 
 def on_message_random(client, userdata, msg):
@@ -132,26 +132,27 @@ def on_message_program_1(client, userdata, msg):
     print (_msg)
     x = _msg.find("b")
 
-    if loops == 0:
-        time.sleep(3)
-        client.publish("wemos","NODE-1-OFF")
+    if _msg[x+1:] == "'NODE-1-OFF'" and program_1_state=="step1":
+        #time.sleep(3)
+        #client.publish("wemos","NODE-1-OFF")
         client.publish("wemos","NODE-2-ON;%d" % distance)
         log_split_times("NODE-2-ON", "w")
         loops += 1
+        program_1_state = "step2"
 
-    if _msg[x+1:] == "'NODE-2-OFF'" and program_1_state=="step1":
+    elif _msg[x+1:] == "'NODE-2-OFF'" and program_1_state=="step2":
         log_split_times("NODE-2-OFF", "a")
         client.publish("wemos","NODE-3-ON;%d" % distance)
         log_split_times("NODE-3-ON", "a")
-        program_1_state = "step2"
+        program_1_state = "step3"
 
-    elif _msg[x+1:] == "'NODE-3-OFF'" and program_1_state=="step2":
+    elif _msg[x+1:] == "'NODE-3-OFF'" and program_1_state=="step3":
         log_split_times("NODE-3-OFF", "a")
         client.publish("wemos","NODE-1-ON;%d" % distance)
         log_split_times("NODE-1-ON", "a")
-        program_1_state = "step3"
+        program_1_state = "step4"
 
-    elif _msg[x+1:] == "'NODE-1-OFF'" and program_1_state=="step3":
+    elif _msg[x+1:] == "'NODE-1-OFF'" and program_1_state=="step4":
         log_split_times("NODE-1-OFF", "a")
         client.publish("wemos","FINISHED")
         times2.print_split_times()
@@ -174,9 +175,9 @@ def on_message_program_2(client, userdata, msg):
     print (_msg)
     x = _msg.find("b")
 
-    if loops == 0:
-        time.sleep(3)
-        client.publish("wemos","NODE-1-OFF")
+    if _msg[x+1:] == "'NODE-1-OFF'":
+        #time.sleep(3)
+        #client.publish("wemos","NODE-1-OFF")
         client.publish("wemos","NODE-2-ON;%d" % distance)
         log_split_times("NODE-2-ON", "w")
         loops += 1

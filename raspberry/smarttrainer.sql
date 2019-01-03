@@ -27,7 +27,9 @@ CREATE TABLE `settings` (
   `rounds` int(11) DEFAULT NULL,
   `distance` int(11) DEFAULT NULL,
   `delay` int(11) DEFAULT NULL,
-  `program` varchar(30) DEFAULT NULL
+  `program` varchar(30) DEFAULT NULL,
+  `sleep` int(11) DEFAULT NULL,
+  `sets` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -37,8 +39,81 @@ CREATE TABLE `settings` (
 
 LOCK TABLES `settings` WRITE;
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
-INSERT INTO `settings` VALUES (3,15,20,200,'default');
+INSERT INTO `settings` VALUES (3,15,30,700,'default',10,1),(0,0,100,0,'program_1',NULL,NULL),(0,0,100,0,'program_2',NULL,NULL);
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tbl_5105_highscore`
+--
+
+DROP TABLE IF EXISTS `tbl_5105_highscore`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tbl_5105_highscore` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `PlayerName` varchar(100) DEFAULT NULL,
+  `time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `TotalTime` float(6,4) DEFAULT NULL,
+  `Time_1` decimal(6,4) DEFAULT NULL,
+  `Time_2` decimal(6,4) DEFAULT NULL,
+  `Time_3` decimal(6,4) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbl_5105_highscore`
+--
+
+LOCK TABLES `tbl_5105_highscore` WRITE;
+/*!40000 ALTER TABLE `tbl_5105_highscore` DISABLE KEYS */;
+INSERT INTO `tbl_5105_highscore` VALUES (1,'makkan','2018-12-22 11:58:30',11.3680,3.6030,4.8530,2.9090),(2,'tony','2018-12-22 11:59:39',8.2300,2.2630,3.7470,2.2170),(3,'tony','2018-12-22 12:12:37',7.5340,2.7420,3.1090,1.6810);
+/*!40000 ALTER TABLE `tbl_5105_highscore` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tbl_times`
+--
+
+DROP TABLE IF EXISTS `tbl_times`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tbl_times` (
+  `Player` varchar(255) DEFAULT NULL,
+  `Rounds` int(11) DEFAULT NULL,
+  `Total_time` varchar(255) DEFAULT NULL,
+  `T1` varchar(255) DEFAULT NULL,
+  `T2` varchar(255) DEFAULT NULL,
+  `T3` varchar(255) DEFAULT NULL,
+  `T4` varchar(255) DEFAULT NULL,
+  `T5` varchar(255) DEFAULT NULL,
+  `T6` varchar(255) DEFAULT NULL,
+  `T7` varchar(255) DEFAULT NULL,
+  `T8` varchar(255) DEFAULT NULL,
+  `T9` varchar(255) DEFAULT NULL,
+  `T10` varchar(255) DEFAULT NULL,
+  `T11` varchar(255) DEFAULT NULL,
+  `T12` varchar(255) DEFAULT NULL,
+  `T13` varchar(255) DEFAULT NULL,
+  `T14` varchar(255) DEFAULT NULL,
+  `T15` varchar(255) DEFAULT NULL,
+  `T16` varchar(255) DEFAULT NULL,
+  `T17` varchar(255) DEFAULT NULL,
+  `T18` varchar(255) DEFAULT NULL,
+  `T19` varchar(255) DEFAULT NULL,
+  `T20` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbl_times`
+--
+
+LOCK TABLES `tbl_times` WRITE;
+/*!40000 ALTER TABLE `tbl_times` DISABLE KEYS */;
+INSERT INTO `tbl_times` VALUES ('Zlatan',15,'10.0','1.190000','1.581000','1.125000','1.171000','1.063000','1.019000','2.737000','1.428000','1.780000','1.981000','1.679000','1.086000','1.021000','1.818000','1.030000','0','0','0','0','0.5');
+/*!40000 ALTER TABLE `tbl_times` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -76,4 +151,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-15 19:51:27
+-- Dump completed on 2018-12-22 13:04:44
