@@ -3,17 +3,17 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <Adafruit_NeoPixel.h>
-
+#include <SharpDistSensor.h>
 #define _ESPLOGLEVEL_ 0
 
-//const char* ssid = "ASUS";
-//const char* password =  "hermanebest123!";
-//const char* mqttServer = "192.168.1.200";
+const char* ssid = "ASUS";
+const char* password =  "hermanebest123!";
+const char* mqttServer = "192.168.1.200";
 
-const char* ssid = "SmartTrainer";
-const char* password =  "runforestrun";
+//const char* ssid = "SmartTrainer";
+//const char* password =  "runforestrun";
 //const char* mqttServer = "192.168.1.20";
-const char* mqttServer = "192.168.4.1";
+//const char* mqttServer = "192.168.4.1";
 
 //IPAddress mqttServer(192,168,4,1);
 const int mqttPort = 1883;
@@ -23,6 +23,7 @@ char message_buff[100];
 String state = "";
 String node = "NODE-1";
 
+String node_online = node + "-ONLINE";
 String node_on = node + "-ON";
 String node_off = node + "-OFF";
 String node_standby = node + "-STANDBY";
@@ -35,10 +36,18 @@ String node_standby = node + "-STANDBY";
 long duration, distance; // Duration used to calculate distance
 int max_time = 1500;
 int loops = 0;
-int distance_limit = 20;
+int distance_limit = 100;
 int ind1;
 String message;
 
+// Analog pin to which the sensor is connected
+const byte sensorPin = A0;
+
+// Window size of the median filter (odd number, 1 = no filtering)
+const byte medianFilterWindowSize = 3;
+
+// Create an object instance of the SharpDistSensor class
+SharpDistSensor sensor(sensorPin, medianFilterWindowSize);
  
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -86,6 +95,31 @@ void finish_sq() {
 //  }
 }
 
+void connected_sq() {
+  for (int x=0; x <= 1; x++) {  
+    for (int i = 0; i < NUM_PIXELS; i++) {
+      pixels.setPixelColor(i, 0, 200, 0);
+      pixels.show();
+      //delay(1);
+    }
+    delay(150);
+    for (int i = 0; i < NUM_PIXELS; i++) {
+      pixels.setPixelColor(i, 0, 0, 0);
+      pixels.show();
+      //delay(1);
+    }
+    delay(150);
+  }
+}
+
+void disconnected_sq() {
+  pixels.setPixelColor(0, 100, 0, 0);
+  pixels.setPixelColor(8, 100, 0, 0);
+  pixels.setPixelColor(16, 100, 0, 0);
+  pixels.show();
+}
+
+
 void setColor(uint32_t color) {
   for (int i = 0; i < NUM_PIXELS; i++) {
     pixels.setPixelColor(i, color);
@@ -96,19 +130,16 @@ void setColor(uint32_t color) {
 
 
 void measure_distance(int distance_limit) {
-  distance = 100;
+  distance = sensor.getDist();
+  distance = 1000;
   while (distance > distance_limit)
   {
-    digitalWrite(trigPin, LOW);
-    delayMicroseconds(2);
-    digitalWrite(trigPin, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(trigPin, LOW);
-    duration = pulseIn(echoPin, HIGH);
-    //Calculate the distance (in cm) based on the speed of sound.
-    distance = duration/58.2;
+    uint32_t t1 = micros();
+    distance = sensor.getDist();
     Serial.println(distance);
-    delay(3);
+    delay(1);
+    uint32_t t2 = micros();
+    //Serial.println(t2-t1);
     loops = loops + 1;
     if ( max_time < loops) {
       loops = 0;
@@ -177,8 +208,11 @@ void setup() {
   WiFi.begin(ssid, password);
  
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    disconnected_sq();
+    delay(1000);
     Serial.println("Connecting to WiFi..");
+    setColor(pixels.Color(0, 0, 0));
+    delay(1000);
   }
   Serial.println("Connected to the WiFi network");
  
@@ -188,14 +222,17 @@ void setup() {
   while (!client.connected()) {
     Serial.println("Connecting to MQTT...");
  
-    if (client.connect("Training-NODE-1")) {
+    if (client.connect("Training-NODE-1","wemos",2,0,"NODE-1-OFFLINE")) {
  
-      Serial.println("connected");  
+      Serial.println("connected");
+      connected_sq();
+      client.publish("wemos", "NODE-1-ONLINE", false);  
  
     } else {
- 
+      setColor(pixels.Color(0, 0, 0));
       Serial.print("failed with state ");
       Serial.println(client.state());
+      disconnected_sq();
       delay(2000);
  
     }
