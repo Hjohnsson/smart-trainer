@@ -12,8 +12,8 @@ const char* mqttServer = "192.168.1.200";
 
 //const char* ssid = "SmartTrainer";
 //const char* password =  "runforestrun";
-//const char* mqttServer = "192.168.1.20";
-//const char* mqttServer = "192.168.4.1";
+//const char* mqttServer = "192.168.1.20";  // used when cable are connected
+//const char* mqttServer = "192.168.4.1";   // used when no cable are connected
 
 //IPAddress mqttServer(192,168,4,1);
 const int mqttPort = 1883;
@@ -27,9 +27,11 @@ String node_online = node + "-ONLINE";
 String node_on = node + "-ON";
 String node_off = node + "-OFF";
 String node_standby = node + "-STANDBY";
+String node_id = node + "-ID";
 
 #define echoPin D3 // Echo Pin
 #define trigPin D4 // Trigger Pin
+#define buzzer D2 // buzzer Pin
 
 #define NUM_PIXELS 24
 
@@ -71,6 +73,7 @@ void start_sq() {
     pixels.show();
     //delay(20);
   }
+  setColor(pixels.Color(0, 0, 0));
 }
 
 void finish_sq() {
@@ -119,6 +122,19 @@ void disconnected_sq() {
   pixels.show();
 }
 
+void id_sq(int id) {
+  for (int i = 0; i < id*2; i++) {
+    pixels.setPixelColor(i, 100, 0, 0);
+    pixels.show();
+    i++;
+  }
+  delay(10000);
+  for (int i = 0; i < id*2; i++) {
+    pixels.setPixelColor(i, 0, 0, 0);
+    pixels.show();
+    i++;
+  }
+}
 
 void setColor(uint32_t color) {
   for (int i = 0; i < NUM_PIXELS; i++) {
@@ -152,6 +168,9 @@ void measure_distance(int distance_limit) {
   //digitalWrite(LED_BUILTIN,HIGH);
   loops = 0;
   setColor(pixels.Color(0, 0, 0));
+  digitalWrite(buzzer,HIGH);
+  delay(10);
+  digitalWrite(buzzer,LOW);
 }
 // handles message arrived on subscribed topic(s)
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -192,21 +211,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
     
   } else if (message=="FINISHED") {
     finish_sq();
+  } else if (message==node_id) {
+    id_sq(distance_limit);
   }
-  //Serial.println("Payload: " + msgString);
 }
- 
-void setup() {
-  //pinMode(LED_BUILTIN, OUTPUT);     // Initialize the LED_BUILTIN pin as an output
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-  //digitalWrite(LED_BUILTIN,HIGH);
-  pixels.begin();
-  Serial.begin(9600);
-  setColor(pixels.Color(0, 0, 0));
+
+void connect() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
- 
+  
   while (WiFi.status() != WL_CONNECTED) {
     disconnected_sq();
     delay(1000);
@@ -224,7 +237,7 @@ void setup() {
  
     if (client.connect("Training-NODE-1","wemos",2,0,"NODE-1-OFFLINE")) {
  
-      Serial.println("connected");
+      Serial.println("Connected to mqtt server");
       connected_sq();
       client.publish("wemos", "NODE-1-ONLINE", false);  
  
@@ -234,14 +247,30 @@ void setup() {
       Serial.println(client.state());
       disconnected_sq();
       delay(2000);
- 
     }
   }
- 
   client.subscribe("wemos");
- 
+  
+}
+
+
+void setup() {
+
+  Serial.begin(9600);
+  
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(buzzer, OUTPUT);
+  
+  pixels.begin();
+  setColor(pixels.Color(0, 0, 0));
+
+  connect();
 }
  
 void loop() {
+  if (!client.connected()) {
+    connect();
+  }
   client.loop();
 }
