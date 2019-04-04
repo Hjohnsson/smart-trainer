@@ -7,14 +7,14 @@
 #define _ESPLOGLEVEL_ 0
 
 //SSID of your network 
-const char* ssid     = "ASUS";
-const char* password = "hermanebest123!";
-const char* mqttServer = "192.168.1.200";
+//const char* ssid     = "ASUS";
+//const char* password = "hermanebest123!";
+//const char* mqttServer = "192.168.1.200";
 
-//const char* ssid = "SmartTrainer";
-//const char* password =  "runforestrun";
+const char* ssid = "Celerity";
+const char* password =  "Celerity";
 //const char* mqttServer = "192.168.1.20";  // used when cable are connected
-//const char* mqttServer = "192.168.4.1";   // used when no cable are connected
+const char* mqttServer = "192.168.1.100";   // used when no cable are connected
 
 //IPAddress mqttServer(192,168,4,1);
 const int mqttPort = 1883;
@@ -30,6 +30,7 @@ String node_off = node + "-OFF";
 String node_standby = node + "-STANDBY";
 String node_id = node + "-ID";
 String node_bat = "";
+String node_start = node + "-START";
 
 const uint16_t PixelCount = 24; // this example assumes 4 pixels, making it smaller will cause a failure
 const uint8_t PixelPin = 23;  // make sure to set this to the correct pin, ignored for Esp8266
@@ -74,7 +75,7 @@ const byte medianFilterWindowSize = 1;
 // 2.1 volt of max 3.3 = 2400 input value
 int vBatPin = A4;    // Read battery voltage, max 4096
 float vBat = 0;  // 
-float maxVBat = 2400; // 2.1 volt
+float maxVBat = 600; // 2.1 volt
 float percentBat = 0; //
 int battery = 0;
 int returnbat = 0;
@@ -181,12 +182,15 @@ void setColor(RgbColor color) {
 int battery_level() {
   // read the value from the sensor:
   vBat = analogRead(vBatPin);
+  Serial.println(vBat);
   percentBat = vBat / maxVBat;
   Serial.println(percentBat * 100);
   battery = percentBat * 100;
   if ( battery > 100) {
     battery = 100;
   }
+  //battery = analogRead(vBatPin);
+  //battery = battery * (4.2/1024)*2;
   //client.publish("wemos", (char*) String(battery).c_str(), false);
   return battery;
   //client.publish("wemos", (char*) node_off.c_str(), false);
@@ -263,6 +267,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
     
   } else if (message=="START") {
     start_sq();
+   
+  } else if (message==node_start) {
+    start_sq();
     
   } else if (message=="FINISHED") {
     finish_sq();
@@ -274,6 +281,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
     returnbat = battery_level();
     node_bat = node +"-VBAT;" + (String(returnbat));
     client.publish("wemos", (char*) node_bat.c_str(), false);
+    
+  } else if (message=="STATUS") {
+    client.publish("wemos", "NODE-6-ONLINE", false);
   }
 }
 
